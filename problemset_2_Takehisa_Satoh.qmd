@@ -304,11 +304,11 @@ p1000
 sims <- 1000
 
 hours_type <- c(
-rep(1,8), #0:00~7:59
-2,        #8:00~8:59
-rep(3,8), #9:00~16:59
-4,        #17:00~17:59  
-rep(5,6)   #18:00~23:59
+rep(1,8), #24,1,2,3,4,5,6,7
+2,        #8
+rep(3,8), #9,10,11,12,13,14,15,16
+4,        #17  
+rep(5,6)   #18,19,20,21,22,23
 )
 
 # function: Generate simulated hourly car counts for the given hour according to the specified distribution type.
@@ -355,11 +355,12 @@ print(dim(youtube_deindentification))
 
 # b
 # answer:
-# View counts:Category ii
+# View counts:Category ii,
 # Like counts:Category ii
 # Dislike counts:Category iii
 # Favorite counts:Category ii
 # Comment counts:Category ii
+#category ii) can use a transformation prior to being used as the outcomeor iii) #category iii)not be appropriate
 
 ```{r}
 vars <- c("view_count", "like_count", "dislike_count", "favorite_count", "comment_count")
@@ -388,7 +389,7 @@ for(v in vars){
 ```
 
 ```{r}
-#add log tarnsformation of "view_count", "like_count", "comment_count"
+#add log transformation of "view_count", "like_count", "comment_count"
 
 youtube$log_view_count <- log1p(youtube$view_count)
 youtube$log_like_count <- log1p(youtube$like_count)
@@ -397,10 +398,31 @@ youtube$log_comment_count <- log1p(youtube$comment_count)
 
 ```
 
-# https://bioinfo-dojo.net/2017/08/09/r-cumsum/ helped me figure out some functions.
+# c
+# answer:
+# -The variable "danger" has a positive effect on "like_count" at 10% significant level.
+# -The variable "patriotic" has a positive effect on "dislike_count" at 10% significant level.
+# -The variable "patriotic" has a positive effect on "comment_count" at 10% significant level.
 
 ```{r}
+flags <- c("funny","show_product_quickly","patriotic","celebrity","danger",	"animals","use_sex")
+outcomes <- c("log_view_count","log_like_count","log_dislike_count","log_comment_count")
 
+predictors <- paste(c(flags,"year"),collapse ="+")
+
+lm_results <- list()
+
+for (y in outcomes){
+formula_str<- paste(y,"~",predictors)
+model <- lm(as.formula(formula_str), data = youtube)
+lm_results[[y]] <- summary(model)
+cat("\n------ Linear regression result for", y, "-------\n")
+print(summary(model))
+}
+```
+
+
+# https://bioinfo-dojo.net/2017/08/09/r-cumsum/ helped me figure out some functions.
 
 ## Quarto
 
